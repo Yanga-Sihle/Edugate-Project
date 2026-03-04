@@ -1,0 +1,520 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="Edugate_Project.Site1" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edugate - STEM Career Guidance</title>
+    
+    <!-- Font Awesome CSS for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Color Variables */
+        :root {
+            --primary-dark: #213A57;
+            --primary-orange: #0B6477;
+            --accent-teal: #14919B;
+            --text-light: #DAD1CB;
+            --accent-green: #45DFB1;
+            --accent-light-green: #80ED99;
+            /* added for drawers */
+            --overlay: rgba(0,0,0,.45);
+            --panel-bg: #1f2f44;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: var(--primary-dark);
+            color: var(--text-light);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* Header */
+        header {
+            position: fixed; top: 0; width: 100%;
+            background: var(--primary-dark);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(218, 209, 203, 0.1);
+            height: 90px;
+            box-shadow: 0 4px 24px 0 rgba(20,145,155,0.10);
+        }
+
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 0; height: 100%; }
+
+        .logo {
+            font-size: 2.6rem; font-weight: 900; letter-spacing: 2px;
+            background: linear-gradient(90deg, #45DFB1 0%, #0B6477 50%, #80ED99 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; text-fill-color: transparent;
+            text-shadow: 0 2px 16px rgba(20,145,155,0.18);
+            padding-left: 10px; transition: transform 0.2s;
+            display: flex; align-items: center; gap: 0.7rem;
+            animation: logoFloat 3s ease-in-out infinite alternate;
+        }
+
+        .logo:hover { transform: scale(1.07) rotate(-2deg); filter: brightness(1.15); }
+
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+
+        .nav-links a, .nav-links button {
+            text-decoration: none; color: var(--accent-light-green);
+            font-weight: 700; font-size: 0.85rem; letter-spacing: 1px;
+            padding: 0.25rem 0.6rem; border-radius: 30px;
+            transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
+            position: relative; display: flex; align-items: center; gap: 0.4rem;
+            background: transparent; border: none; cursor: pointer;
+        }
+
+        .nav-links a i, .nav-links button i {
+            font-size: 0.9rem; transition: all 0.3s ease;
+            background: linear-gradient(135deg, #45DFB1, #14919B);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links a:hover, .nav-links a:focus,
+        .nav-links button:hover, .nav-links button:focus {
+            background: linear-gradient(90deg, #14919B 0%, #45DFB1 100%);
+            color: var(--primary-dark);
+            box-shadow: 0 2px 12px 0 rgba(20,145,155,0.15);
+            transform: translateY(-2px) scale(1.07);
+        }
+
+        .nav-links a:hover i, .nav-links button:hover i {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, #14919B, #45DFB1);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        .nav-links a::after, .nav-links button::after {
+            content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0;
+            background: var(--accent-teal); transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after, .nav-links button:hover::after { width: 100%; }
+
+        .cta-btn {
+            background: linear-gradient(135deg, #14919B, #45DFB1);
+            color: var(--primary-dark); padding: 0.8rem 1.5rem; border: none; border-radius: 50px;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block;
+        }
+        .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(20,145,155,0.4); }
+
+        /* Main Content Area */
+        .main-content { padding-top: 80px; min-height: calc(100vh - 200px); background: var(--primary-dark); }
+
+        /* Footer */
+        footer { background: #1a1a1a; color: var(--text-light); padding: 60px 0 30px; margin-top: 60px; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 2rem; }
+        .footer-section h3 { margin-bottom: 1rem; color: var(--accent-green); }
+        .footer-section ul { list-style: none; }
+        .footer-section ul li { margin-bottom: 0.5rem; }
+        .footer-section ul li a { color: #ccc; text-decoration: none; transition: color 0.3s ease; }
+        .footer-section ul li a:hover { color: var(--accent-teal); }
+        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid #333; color: #999; }
+
+        /* Animations */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes logoFloat { 0% { transform: translateY(0) scale(1);} 100% { transform: translateY(-10px) scale(1.05);} }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .logo { font-size: 2rem; }
+            .nav-links { gap: 1.5rem; }
+            nav { padding: 1rem 0; }
+            header { height: 70px; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .main-content { padding-top: 70px; }
+        }
+
+        html { scroll-behavior: smooth; }
+
+        /* --- Help slide-out (existing) --- */
+        .help-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(2px);
+            opacity: 0; visibility: hidden; transition: opacity .25s ease, visibility .25s ease; z-index: 1100;
+        }
+        .help-overlay.show { opacity: 1; visibility: visible; }
+
+        .help-panel {
+            position: fixed; top: 0; right: 0; height: 100vh; width: min(520px, 90vw);
+            background: var(--primary-dark); color: var(--text-light);
+            border-left: 1px solid rgba(255,255,255,.08);
+            box-shadow: -12px 0 40px rgba(0,0,0,.35);
+            transform: translateX(105%);
+            transition: transform .28s ease;
+            z-index: 1200; display: flex; flex-direction: column;
+        }
+        .help-panel.show { transform: translateX(0); }
+
+        .help-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px;
+            border-bottom: 1px solid rgba(255,255,255,.1); background: linear-gradient(135deg, var(--primary-orange), var(--accent-teal)); }
+        .help-header h2 { font-size: 1.2rem; color: var(--primary-dark); font-weight: 900; }
+        .help-close { background: transparent; border: 0; color: var(--primary-dark); font-size: 1.2rem; cursor: pointer; padding: 6px 8px; border-radius: 8px; }
+        .help-close:hover { background: rgba(0,0,0,.08); }
+
+        .help-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 12px;
+            background: rgba(255,255,255,.03); border-bottom: 1px solid rgba(255,255,255,.08); }
+        .help-tab { background: rgba(255,255,255,.06); color: var(--accent-light-green); border: 1px solid rgba(255,255,255,.08);
+            padding: .55rem .75rem; border-radius: 10px; cursor: pointer; font-weight: 700; }
+        .help-tab.active, .help-tab:focus { outline: none; background: var(--accent-green); color: var(--primary-dark); border-color: var(--accent-green); }
+
+        .help-content { padding: 14px 18px 22px; overflow: auto; }
+        .help-pane { display: none; animation: fadeInUp .25s ease both; }
+        .help-pane.active { display: block; }
+        .help-pane h3 { color: var(--accent-green); margin-bottom: .8rem; }
+        .help-pane ol { margin-left: 1.1rem; margin-bottom: .8rem; }
+        .help-pane li { margin-bottom: .5rem; }
+        .help-pane .tip { margin-top: .5rem; opacity: .9; }
+
+        /* --- NEW: About/Contact drawers --- */
+        .drawer-overlay {
+            position: fixed; inset: 0; background: var(--overlay);
+            opacity: 0; pointer-events: none; transition: opacity .25s ease;
+            z-index: 1090;
+        }
+        .drawer-overlay.show { opacity: 1; pointer-events: auto; }
+
+        .drawer {
+            position: fixed; right: -460px; top: 0; height: 100vh; width: 420px;
+            background: var(--panel-bg); color: var(--text-light);
+            border-left: 2px solid var(--accent-teal);
+            box-shadow: -16px 0 40px rgba(0,0,0,.35);
+            transition: right .3s ease; z-index: 1100; overflow-y: auto;
+            padding: 24px 22px 28px;
+        }
+        .drawer.open { right: 0; }
+
+        .drawer h2 { margin: 0 0 12px; color: var(--accent-green); font-size: 1.4rem; }
+        .drawer p  { color: var(--accent-light-green); line-height: 1.55; margin-bottom: 12px; }
+        .drawer .muted { color: #bcd7d3; font-size: .95rem; }
+        .drawer .close-btn {
+            background: none; border: 1px solid var(--accent-teal); color: var(--text-light);
+            padding: .45rem .8rem; border-radius: 10px; cursor: pointer; font-weight: 700;
+            transition: all .2s; margin-top: 10px;
+        }
+        .drawer .close-btn:hover { background: var(--accent-teal); color: var(--primary-dark); }
+
+        .contact-list { list-style: none; margin: 12px 0 4px; padding: 0; }
+        .contact-list li { margin: 10px 0; }
+        .contact-list a { color: var(--accent-green); text-decoration: none; font-weight: 700; }
+        .contact-list a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <%-- IMPORTANT: ALL server-side ASP.NET controls must be inside <form runat="server"> --%>
+    <form id="mainForm" runat="server">
+
+        <%-- ScriptManager (kept) --%>
+        <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
+
+        <header>
+           <nav class="container">
+                <div class="logo">Edugate</div>
+                <ul class="nav-links">
+                    <!-- UPDATED: open slide-in drawers instead of navigating -->
+                    <li>
+                        <button type="button" onclick="openDrawer('aboutDrawer')">
+                            <i class="fas fa-info-circle"></i> About Us
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" onclick="openDrawer('contactDrawer')">
+                            <i class="fas fa-phone-alt"></i> Contact Us
+                        </button>
+                    </li>
+                    <!-- Help button (existing) -->
+                    <li>
+                        <a href="javascript:void(0)" id="btnHelp" onclick="openHelpPanel()" aria-haspopup="dialog" aria-controls="helpPanel">
+                            <i class="fas fa-question-circle"></i> Help
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- EXISTING: Help Slide-out -->
+        <div id="helpOverlay" class="help-overlay" onclick="closeHelpPanel()" aria-hidden="true"></div>
+
+        <aside id="helpPanel" class="help-panel" role="dialog" aria-modal="true" aria-labelledby="helpTitle" aria-hidden="true">
+            <div class="help-header">
+                <h2 id="helpTitle"><i class="fas fa-question-circle"></i> How to Log In</h2>
+                <button class="help-close" type="button" onclick="closeHelpPanel()" aria-label="Close help panel">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="help-tabs">
+                <button type="button" class="help-tab active" data-help-tab="student">Student</button>
+                <button type="button" class="help-tab" data-help-tab="teacher">Teacher</button>
+                <button type="button" class="help-tab" data-help-tab="school">School</button>
+                <button type="button" class="help-tab" data-help-tab="admin">Admin</button>
+            </div>
+
+            <div class="help-content">
+                <!-- Student -->
+                <section class="help-pane active" data-help-pane="student" tabindex="0">
+                    <h3><i class="fas fa-user-graduate"></i> Student Login Steps</h3>
+                    <ol>
+                        <li>On the home page, keep <strong>Student</strong> selected in the toggle.</li>
+                        <li>Enter your <strong>Email</strong> and <strong>Password</strong>.</li>
+                        <li>Click <strong>Login</strong> to go to your Student Dashboard.</li>
+                        <li>No account? Click <em>Register here</em> to create one.</li>
+                    </ol>
+                    <p class="tip"><i class="fas fa-lightbulb"></i> Tip: Your email must match what you used during registration.</p>
+                </section>
+
+                <!-- Teacher -->
+                <section class="help-pane" data-help-pane="teacher" tabindex="0">
+                    <h3><i class="fas fa-chalkboard-teacher"></i> Teacher Login Steps</h3>
+                    <ol>
+                        <li>Open the home page and switch the toggle to <strong>Admin</strong> (this also supports teacher accounts).</li>
+                        <li>Enter your <strong>Username</strong> and <strong>Password</strong>.</li>
+                        <li>Click <strong>Login</strong> to open the Teacher Dashboard.</li>
+                        <li>If you don’t have an account, register via the school process or contact your admin.</li>
+                    </ol>
+                    <p class="tip"><i class="fas fa-key"></i> Passwords are verified using secure hashing (BCrypt).</p>
+                </section>
+
+                <!-- School -->
+                <section class="help-pane" data-help-pane="school" tabindex="0">
+                    <h3><i class="fas fa-school"></i> School Login Steps</h3>
+                    <ol>
+                        <li>Click <strong>School Login</strong> to expand the school form.</li>
+                        <li>Enter your <strong>5-digit School Code</strong> and <strong>Password</strong>.</li>
+                        <li>Click <strong>Login</strong> to go to the School Dashboard.</li>
+                        <li>Need an account? Use <em>Register your school</em> or contact support.</li>
+                    </ol>
+                    <p class="tip"><i class="fas fa-info-circle"></i> If your plan is Standard and overdue, some access may be limited until payment is verified.</p>
+                </section>
+
+                <!-- Admin -->
+                <section class="help-pane" data-help-pane="admin" tabindex="0">
+                    <h3><i class="fas fa-user-shield"></i> Admin Login Steps</h3>
+                    <ol>
+                        <li>On the home page, switch the toggle to <strong>Admin</strong>.</li>
+                        <li>Enter your <strong>Username</strong> and <strong>Password</strong>.</li>
+                        <li>Click <strong>Login</strong> to access the Admin Dashboard.</li>
+                        <li>Admins created by the system can log in directly; teachers also authenticate here with their username & hashed password.</li>
+                    </ol>
+                    <p class="tip"><i class="fas fa-lock"></i> Keep your admin credentials private. Contact the platform owner to create/disable admin users.</p>
+                </section>
+            </div>
+        </aside>
+
+        <!-- NEW: About/Contact Drawers + overlay -->
+        <div id="drawerOverlay" class="drawer-overlay" onclick="closeAllDrawers()"></div>
+
+        <!-- ABOUT US Drawer -->
+        <aside id="aboutDrawer" class="drawer" aria-hidden="true" aria-labelledby="aboutTitle">
+            <h2 id="aboutTitle">About Edugate</h2>
+            <p>
+                Edugate is a South African platform advancing equitable access to <strong>STEM</strong> learning.
+                We partner with schools and teachers to deliver curriculum-aligned content, track learner progress,
+                and guide students toward STEM careers and opportunities.
+            </p>
+            <p class="muted">
+                Our focus: practical resources, data-driven insights, and real pathways—from classroom to campus to career.
+            </p>
+            <button type="button" class="close-btn" onclick="closeDrawer('aboutDrawer')">Close</button>
+        </aside>
+
+        <!-- CONTACT US Drawer -->
+        <aside id="contactDrawer" class="drawer" aria-hidden="true" aria-labelledby="contactTitle">
+            <h2 id="contactTitle">Contact Us</h2>
+            <p class="muted">We’re here to help. Reach us on our South African lines:</p>
+            <ul class="contact-list">
+                <li>
+                    <strong>Business (WhatsApp/VoIP):</strong>
+                    <a href="tel:+27875501234">+27 87 550 1234</a>
+                    &nbsp;•&nbsp;<a href="https://wa.me/27875501234" target="_blank" rel="noopener">WhatsApp</a>
+                </li>
+                <li>
+                    <strong>Telephone (East London):</strong>
+                    <a href="tel:+27211107890">+27 21 110 7890</a>
+                </li>
+                <li>
+                    <strong>Email:</strong>
+                    <a href="mailto:support@edugate.co.za">support@edugate.co.za</a>
+                </li>
+                <li>
+                    <strong>Hours:</strong> Mon–Fri, 08:30–17:00 SAST
+                </li>
+            </ul>
+            <button type="button" class="close-btn" onclick="closeDrawer('contactDrawer')">Close</button>
+        </aside>
+
+        <div class="main-content">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3>Edugate STEM</h3>
+                        <p>Empowering the next generation of scientists, technologists, engineers, and mathematicians through innovative education.</p>
+                    </div>
+                    <div class="footer-section">
+                        <h3>STEM Fields</h3>
+                        <ul>
+                            <li><a href="#">Computer Science</a></li>
+                            <li><a href="#">Engineering</a></li>
+                            <li><a href="#">Biotechnology</a></li>
+                            <li><a href="#">Mathematics</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#">STEM Careers</a></li>
+                            <li><a href="#">Research Opportunities</a></li>
+                            <li><a href="#">Internships</a></li>
+                            <li><a href="#">Scholarships</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h3>Support</h3>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Contact STEM Advisors</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Edugate STEM. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+
+    </form> <%-- IMPORTANT: Closing the form tag --%>
+
+    <script>
+        // Smooth scrolling for anchor links (kept)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // Header background on scroll (kept)
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(33, 58, 87, 0.98)';
+                header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.3)';
+            } else {
+                header.style.background = 'var(--primary-dark)';
+                header.style.boxShadow = 'none';
+            }
+        });
+
+        // Ripple effect for .cta-btn (kept)
+        document.querySelectorAll('.cta-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (!btn.hasAttribute('type') || btn.getAttribute('type') !== 'submit') e.preventDefault();
+                const ripple = document.createElement('span');
+                const rect = btn.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                ripple.style.cssText = `
+                    position: absolute; width: ${size}px; height: ${size}px;
+                    left: ${x}px; top: ${y}px; background: rgba(255, 255, 255, 0.3);
+                    border-radius: 50%; transform: scale(0); animation: ripple 0.6s ease-out; pointer-events: none;
+                `;
+                const originalPosition = btn.style.position;
+                const originalOverflow = btn.style.overflow;
+                btn.style.position = 'relative'; btn.style.overflow = 'hidden';
+                btn.appendChild(ripple);
+                setTimeout(() => { ripple.remove(); btn.style.position = originalPosition; btn.style.overflow = originalOverflow; }, 600);
+            });
+        });
+        const style = document.createElement('style');
+        style.textContent = `@keyframes ripple { to { transform: scale(2); opacity: 0; } }`;
+        document.head.appendChild(style);
+
+        /* Help panel JS (kept) */
+        function openHelpPanel() {
+            const panel = document.getElementById('helpPanel');
+            const overlay = document.getElementById('helpOverlay');
+            panel.classList.add('show');
+            panel.setAttribute('aria-hidden', 'false');
+            overlay.classList.add('show');
+            overlay.setAttribute('aria-hidden', 'false');
+            const activePane = panel.querySelector('.help-pane.active');
+            if (activePane) activePane.focus();
+            document.addEventListener('keydown', escCloseHelp);
+        }
+        function closeHelpPanel() {
+            const panel = document.getElementById('helpPanel');
+            const overlay = document.getElementById('helpOverlay');
+            panel.classList.remove('show');
+            panel.setAttribute('aria-hidden', 'true');
+            overlay.classList.remove('show');
+            overlay.setAttribute('aria-hidden', 'true');
+            document.removeEventListener('keydown', escCloseHelp);
+        }
+        function escCloseHelp(e) { if (e.key === 'Escape') closeHelpPanel(); }
+        (function initHelpTabs() {
+            const tabs = document.querySelectorAll('.help-tab');
+            const panes = document.querySelectorAll('.help-pane');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.getAttribute('data-help-tab');
+                    tabs.forEach(t => t.classList.remove('active'));
+                    panes.forEach(p => p.classList.remove('active'));
+                    tab.classList.add('active');
+                    const pane = document.querySelector(`.help-pane[data-help-pane="${target}"]`);
+                    if (pane) { pane.classList.add('active'); pane.focus(); }
+                });
+            });
+        })();
+
+        /* NEW: Drawer helpers for About/Contact */
+        function openDrawer(id) {
+            const overlay = document.getElementById('drawerOverlay');
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.add('open');
+            el.setAttribute('aria-hidden', 'false');
+            overlay.classList.add('show');
+        }
+        function closeDrawer(id) {
+            const overlay = document.getElementById('drawerOverlay');
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.remove('open');
+            el.setAttribute('aria-hidden', 'true');
+            // Hide overlay if no drawers remain open
+            setTimeout(() => {
+                if (!document.querySelector('.drawer.open')) overlay.classList.remove('show');
+            }, 50);
+        }
+        function closeAllDrawers() {
+            document.querySelectorAll('.drawer.open').forEach(d => {
+                d.classList.remove('open');
+                d.setAttribute('aria-hidden', 'true');
+            });
+            document.getElementById('drawerOverlay').classList.remove('show');
+        }
+    </script>
+</body>
+</html>

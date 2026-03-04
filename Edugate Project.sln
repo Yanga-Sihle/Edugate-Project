@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Edugate Project", "Edugate Project\Edugate Project.csproj", "{BDED2BC3-D5A1-4818-BED7-868753052A63}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BDED2BC3-D5A1-4818-BED7-868753052A63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDED2BC3-D5A1-4818-BED7-868753052A63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDED2BC3-D5A1-4818-BED7-868753052A63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDED2BC3-D5A1-4818-BED7-868753052A63}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1022CE8B-4737-48CF-84AE-B582CF7F47AA}
+	EndGlobalSection
+EndGlobal
